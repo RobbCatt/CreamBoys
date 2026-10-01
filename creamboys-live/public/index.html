@@ -128,8 +128,14 @@ function App() {
       setLoading(true);
       const savedGames = await dbGet("games");
       const savedRoster = await dbGet("roster");
+      const savedCurrentGame = await dbGet("currentGame");
       if (Array.isArray(savedGames)) setGames(savedGames);
       if (Array.isArray(savedRoster)) { setRoster(savedRoster); setRosterDate(savedRoster._date || "2026-09-08"); }
+      if (savedCurrentGame && !savedCurrentGame.finalized) {
+        setCurrentGame(savedCurrentGame);
+        setDraftPick(savedCurrentGame.picks.filter(Boolean).length);
+        setScreen("draft");
+      }
       setLoading(false);
     }
     load();
@@ -140,6 +146,37 @@ function App() {
     if (games.length === 0 || loading) return;
     dbSet("games", games).then(() => setDbStatus("✅ Saved " + new Date().toLocaleTimeString()));
   }, [games]);
+
+  // Save currentGame to Supabase whenever it changes so all devices stay in sync
+  useEffect(() => {
+    if (!currentGame || loading) return;
+    dbSet("currentGame", currentGame);
+  }, [currentGame, draftPick]);
+
+  // Poll Supabase every 3 seconds to pick up changes from other devices
+  useEffect(() => {
+    const id = setInterval(async () => {
+      // Sync current game from other devices
+      const remoteGame = await dbGet("currentGame");
+      if (remoteGame && (!currentGame || remoteGame.id === currentGame?.id)) {
+        setCurrentGame(prev => {
+          // Only update if remote is different
+          if (JSON.stringify(prev) !== JSON.stringify(remoteGame)) {
+            const remotePicks = remoteGame.picks.filter(Boolean).length;
+            setDraftPick(remotePicks);
+            return remoteGame;
+          }
+          return prev;
+        });
+      }
+      // Sync finalized games
+      const remoteGames = await dbGet("games");
+      if (Array.isArray(remoteGames) && remoteGames.length !== games.length) {
+        setGames(remoteGames);
+      }
+    }, 3000);
+    return () => clearInterval(id);
+  }, [currentGame?.id, games.length]);
 
   // Save roster to Supabase when it changes
   useEffect(() => {
@@ -285,6 +322,7 @@ function App() {
     const finalGame={...currentGame,scores,finalized:true};
     setGames(g=>[...g,finalGame]);
     setCurrentGame(null); setEditMode(false); setScreen("standings");
+    dbSet("currentGame", null);
   }
 
   const draftedIds=currentGame?currentGame.picks.filter(Boolean).map(p=>p.playerId):[];
