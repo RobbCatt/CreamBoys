@@ -89,6 +89,100 @@ const DEFAULT_ROSTER = [
   { id: 23, name: "Malte Gustafsson",    number: 55, position: "D"  },
 ];
 
+
+const ISLANDERS_SCHEDULE = [
+  // October 2026
+  { d: new Date(2026,9,3),  day:"Sat", opponent:"New Jersey Devils",    home:true,  time:"7:30 PM" },
+  { d: new Date(2026,9,6),  day:"Tue", opponent:"NY Rangers",           home:false, time:"7:00 PM" },
+  { d: new Date(2026,9,8),  day:"Thu", opponent:"Chicago Blackhawks",   home:true,  time:"7:30 PM" },
+  { d: new Date(2026,9,10), day:"Sat", opponent:"Tampa Bay Lightning",  home:true,  time:"7:30 PM" },
+  { d: new Date(2026,9,13), day:"Tue", opponent:"Vancouver Canucks",    home:true,  time:"7:45 PM" },
+  { d: new Date(2026,9,15), day:"Thu", opponent:"Ottawa Senators",      home:false, time:"7:00 PM" },
+  { d: new Date(2026,9,17), day:"Sat", opponent:"Toronto Maple Leafs",  home:false, time:"7:00 PM" },
+  { d: new Date(2026,9,20), day:"Tue", opponent:"Anaheim Ducks",        home:true,  time:"7:00 PM" },
+  { d: new Date(2026,9,22), day:"Thu", opponent:"Los Angeles Kings",    home:true,  time:"7:30 PM" },
+  { d: new Date(2026,9,25), day:"Sun", opponent:"Dallas Stars",         home:false, time:"6:00 PM" },
+  { d: new Date(2026,9,28), day:"Wed", opponent:"Nashville Predators",  home:false, time:"8:00 PM" },
+  { d: new Date(2026,9,30), day:"Fri", opponent:"Minnesota Wild",       home:false, time:"8:00 PM" },
+  { d: new Date(2026,9,31), day:"Sat", opponent:"Edmonton Oilers",      home:true,  time:"3:30 PM" },
+  // November 2026
+  { d: new Date(2026,10,6),  day:"Fri", opponent:"Carolina Hurricanes",  home:true,  time:"7:00 PM" },
+  { d: new Date(2026,10,8),  day:"Sun", opponent:"New Jersey Devils",    home:true,  time:"7:00 PM" },
+  { d: new Date(2026,10,10), day:"Tue", opponent:"San Jose Sharks",      home:false, time:"10:00 PM" },
+  { d: new Date(2026,10,13), day:"Fri", opponent:"Los Angeles Kings",    home:false, time:"10:00 PM" },
+  { d: new Date(2026,10,15), day:"Sun", opponent:"Anaheim Ducks",        home:false, time:"10:00 PM" },
+  { d: new Date(2026,10,18), day:"Wed", opponent:"Columbus Blue Jackets",home:true,  time:"7:00 PM" },
+  { d: new Date(2026,10,20), day:"Fri", opponent:"Winnipeg Jets",        home:false, time:"8:00 PM" },
+  { d: new Date(2026,10,22), day:"Sun", opponent:"Detroit Red Wings",    home:false, time:"7:00 PM" },
+  { d: new Date(2026,10,24), day:"Tue", opponent:"Toronto Maple Leafs", home:true,  time:"7:30 PM" },
+  { d: new Date(2026,10,26), day:"Thu", opponent:"St. Louis Blues",      home:true,  time:"7:00 PM" },
+  { d: new Date(2026,10,28), day:"Sat", opponent:"Winnipeg Jets",        home:true,  time:"7:30 PM" },
+  { d: new Date(2026,10,29), day:"Sun", opponent:"Philadelphia Flyers",  home:false, time:"7:30 PM" },
+  // December 2026
+  { d: new Date(2026,11,2),  day:"Wed", opponent:"Florida Panthers",     home:true,  time:"7:00 PM" },
+  { d: new Date(2026,11,4),  day:"Thu", opponent:"Philadelphia Flyers",  home:false, time:"7:30 PM" },
+  { d: new Date(2026,11,5),  day:"Fri", opponent:"San Jose Sharks",      home:true,  time:"7:00 PM" },
+  { d: new Date(2026,11,7),  day:"Sun", opponent:"Colorado Avalanche",   home:true,  time:"1:00 PM" },
+  { d: new Date(2026,11,11), day:"Thu", opponent:"Calgary Flames",       home:true,  time:"7:00 PM" },
+  { d: new Date(2026,11,12), day:"Fri", opponent:"Carolina Hurricanes",  home:false, time:"7:00 PM" },
+  { d: new Date(2026,11,16), day:"Tue", opponent:"Utah Hockey Club",     home:false, time:"9:00 PM" },
+  { d: new Date(2026,11,17), day:"Wed", opponent:"Colorado Avalanche",   home:false, time:"9:00 PM" },
+  { d: new Date(2026,11,19), day:"Fri", opponent:"Vegas Golden Knights", home:false, time:"10:00 PM" },
+  { d: new Date(2026,11,21), day:"Sun", opponent:"NY Rangers",           home:true,  time:"7:00 PM" },
+  { d: new Date(2026,11,23), day:"Tue", opponent:"Boston Bruins",        home:true,  time:"7:00 PM" },
+  { d: new Date(2026,11,27), day:"Sat", opponent:"Boston Bruins",        home:false, time:"7:00 PM" },
+  { d: new Date(2026,11,28), day:"Sun", opponent:"Ottawa Senators",      home:true,  time:"7:00 PM" },
+  { d: new Date(2026,11,30), day:"Tue", opponent:"Washington Capitals",  home:true,  time:"4:00 PM" },
+  // January 2027
+  { d: new Date(2027,0,3),  day:"Sun", opponent:"Seattle Kraken",        home:false, time:"10:00 PM" },
+  { d: new Date(2027,0,6),  day:"Wed", opponent:"Vancouver Canucks",     home:false, time:"9:00 PM" },
+  { d: new Date(2027,0,8),  day:"Fri", opponent:"Calgary Flames",        home:false, time:"8:00 PM" },
+  { d: new Date(2027,0,9),  day:"Sat", opponent:"Edmonton Oilers",       home:false, time:"3:30 PM" },
+  { d: new Date(2027,0,14), day:"Thu", opponent:"Pittsburgh Penguins",   home:true,  time:"7:30 PM" },
+  { d: new Date(2027,0,16), day:"Sat", opponent:"Dallas Stars",          home:true,  time:"7:00 PM" },
+  { d: new Date(2027,0,17), day:"Sun", opponent:"New Jersey Devils",     home:false, time:"7:00 PM" },
+  { d: new Date(2027,0,18), day:"Mon", opponent:"Nashville Predators",   home:true,  time:"3:00 PM" },
+  { d: new Date(2027,0,21), day:"Thu", opponent:"Buffalo Sabres",        home:true,  time:"7:00 PM" },
+  { d: new Date(2027,0,23), day:"Sat", opponent:"Washington Capitals",   home:false, time:"7:00 PM" },
+  { d: new Date(2027,0,24), day:"Sun", opponent:"Seattle Kraken",        home:true,  time:"7:30 PM" },
+  { d: new Date(2027,0,27), day:"Wed", opponent:"Pittsburgh Penguins",   home:false, time:"7:00 PM" },
+  { d: new Date(2027,0,28), day:"Thu", opponent:"Carolina Hurricanes",   home:false, time:"6:30 PM" },
+  { d: new Date(2027,0,31), day:"Sun", opponent:"Tampa Bay Lightning",   home:false, time:"7:00 PM" },
+  // February 2027
+  { d: new Date(2027,1,1),  day:"Mon", opponent:"Florida Panthers",      home:false, time:"2:00 PM" },
+  { d: new Date(2027,1,4),  day:"Thu", opponent:"Buffalo Sabres",        home:false, time:"7:00 PM" },
+  { d: new Date(2027,1,13), day:"Sat", opponent:"NY Rangers",            home:false, time:"7:00 PM" },
+  { d: new Date(2027,1,14), day:"Sun", opponent:"Minnesota Wild",        home:true,  time:"7:00 PM" },
+  { d: new Date(2027,1,15), day:"Mon", opponent:"Utah Hockey Club",      home:true,  time:"3:00 PM" },
+  { d: new Date(2027,1,19), day:"Fri", opponent:"NY Rangers",            home:true,  time:"7:00 PM" },
+  { d: new Date(2027,1,21), day:"Sun", opponent:"Montreal Canadiens",    home:false, time:"7:00 PM" },
+  { d: new Date(2027,1,23), day:"Tue", opponent:"Columbus Blue Jackets", home:false, time:"7:00 PM" },
+  { d: new Date(2027,1,24), day:"Wed", opponent:"Chicago Blackhawks",    home:false, time:"8:00 PM" },
+  { d: new Date(2027,1,27), day:"Sat", opponent:"Philadelphia Flyers",   home:true,  time:"7:00 PM" },
+  { d: new Date(2027,1,28), day:"Sun", opponent:"Columbus Blue Jackets", home:false, time:"7:00 PM" },
+  // March 2027
+  { d: new Date(2027,2,2),  day:"Tue", opponent:"Washington Capitals",   home:true,  time:"7:00 PM" },
+  { d: new Date(2027,2,5),  day:"Fri", opponent:"Vegas Golden Knights",  home:true,  time:"7:00 PM" },
+  { d: new Date(2027,2,7),  day:"Sun", opponent:"Pittsburgh Penguins",   home:true,  time:"1:00 PM" },
+  { d: new Date(2027,2,10), day:"Wed", opponent:"Montreal Canadiens",    home:true,  time:"7:00 PM" },
+  { d: new Date(2027,2,13), day:"Sat", opponent:"Florida Panthers",      home:false, time:"7:00 PM" },
+  { d: new Date(2027,2,14), day:"Sun", opponent:"Tampa Bay Lightning",   home:false, time:"7:00 PM" },
+  { d: new Date(2027,2,15), day:"Mon", opponent:"Boston Bruins",         home:false, time:"6:00 PM" },
+  { d: new Date(2027,2,17), day:"Wed", opponent:"Washington Capitals",   home:false, time:"6:00 PM" },
+  { d: new Date(2027,2,20), day:"Sat", opponent:"Philadelphia Flyers",   home:true,  time:"2:00 PM" },
+  { d: new Date(2027,2,21), day:"Sun", opponent:"Buffalo Sabres",        home:true,  time:"2:00 PM" },
+  { d: new Date(2027,2,26), day:"Fri", opponent:"St. Louis Blues",       home:false, time:"7:00 PM" },
+  { d: new Date(2027,2,27), day:"Sat", opponent:"Detroit Red Wings",     home:true,  time:"6:30 PM" },
+  { d: new Date(2027,2,30), day:"Tue", opponent:"Carolina Hurricanes",   home:true,  time:"6:30 PM" },
+  // April 2027
+  { d: new Date(2027,3,1),  day:"Thu", opponent:"Pittsburgh Penguins",   home:false, time:"6:00 PM" },
+  { d: new Date(2027,3,2),  day:"Fri", opponent:"Ottawa Senators",       home:true,  time:"6:00 PM" },
+  { d: new Date(2027,3,4),  day:"Sun", opponent:"Montreal Canadiens",    home:true,  time:"6:30 PM" },
+  { d: new Date(2027,3,6),  day:"Tue", opponent:"Detroit Red Wings",     home:true,  time:"6:30 PM" },
+  { d: new Date(2027,3,8),  day:"Thu", opponent:"New Jersey Devils",     home:false, time:"6:00 PM" },
+  { d: new Date(2027,3,10), day:"Sat", opponent:"Columbus Blue Jackets", home:true,  time:"4:00 PM" },
+];
+
 const DRAFT_SEQUENCE = [0,1,2,3,4,5, 0,1,2,3,4,5, 4,3,2,1,0,5];
 const MANAGERS = ["Rob","Tom","Stewie","Scott","Cools","Tim"];
 const posColor = { C:"#F47D20", LW:"#00539B", RW:"#003087", D:"#6C757D" };
@@ -104,7 +198,7 @@ function buildDraftOrder(prevScores, firstGoalManagerIdx) {
 }
 
 function App() {
-  const [screen, setScreen] = useState("setup");
+  const [screen, setScreen] = useState("home");
   const [games, setGames] = useState([]);
   const [currentGame, setCurrentGame] = useState(null);
   const [draftPick, setDraftPick] = useState(0);
@@ -401,14 +495,94 @@ function App() {
       </div>
 
       <div style={s.nav}>
-        {["setup","draft","scoring","standings","lineup"].map(t=>(
+        {["home","setup","draft","scoring","standings","lineup"].map(t=>(
           <button key={t} style={s.navBtn(screen===t)} onClick={()=>setScreen(t)}>{t}</button>
         ))}
       </div>
 
       <div style={{padding:"8px 14px 80px 14px",flex:1,overflowY:"auto",overflowX:"hidden",width:"100%",boxSizing:"border-box"}}>
 
-        {/* ── SETUP ── */}
+        {/* ── HOME ── */}
+        {screen==="home"&&(
+          <div>
+            {/* Next Game Card */}
+            {(() => {
+              const today = new Date(); today.setHours(0,0,0,0);
+              const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+              const nextGame = ISLANDERS_SCHEDULE.find(g=>g.d>=today);
+              return nextGame ? (
+                <div style={{background:"linear-gradient(135deg,#023B96,#F47D20)",borderRadius:10,padding:"14px 16px",margin:"6px 0",boxShadow:"0 4px 24px #0008"}}>
+                  <div style={{fontSize:9,letterSpacing:3,textTransform:"uppercase",color:"#fff",opacity:0.8,marginBottom:4}}>Next Game</div>
+                  <div style={{fontSize:20,fontWeight:900,color:"#fff",fontFamily:"Arial Black,sans-serif"}}>{nextGame.opponent}</div>
+                  <div style={{display:"flex",gap:16,marginTop:8,flexWrap:"wrap"}}>
+                    <div style={{fontSize:12,color:"#fff",opacity:0.9}}>📅 {nextGame.day} · {MONTHS[nextGame.d.getMonth()]} {nextGame.d.getDate()}</div>
+                    <div style={{fontSize:12,color:"#fff",opacity:0.9}}>🕐 {nextGame.time}</div>
+                    <div style={{fontSize:12,color:"#fff",opacity:0.9}}>{nextGame.home?"🏠 Home · UBS Arena":"✈️ Away"}</div>
+                  </div>
+                </div>
+              ) : <div style={{...s.card,textAlign:"center",color:"#8899aa"}}>No upcoming games</div>;
+            })()}
+
+            {/* Quick Standings */}
+            <div style={s.card}>
+              <div style={s.sec}>Season Standings</div>
+              {games.length===0 ? (
+                <div style={{fontSize:12,color:"#556"}}>No games played yet — standings will appear here.</div>
+              ) : (
+                [...MANAGERS.map((name,i)=>({name,i,total:totalScores[i],creams:creamCounts[i]}))].sort((a,b)=>b.creams-a.creams||b.total-a.total).map((m,rank)=>(
+                  <div key={m.i} style={{display:"flex",alignItems:"center",gap:10,padding:"6px 10px",borderRadius:6,border:"1px solid #1e2a3a",marginBottom:4,background:rank===0?"#1a1f30":"#111827"}}>
+                    <div style={{fontSize:16,fontWeight:900,color:rank===0?"#F47D20":"#334",width:24}}>{rank+1}</div>
+                    <div style={{flex:1,fontSize:13,fontWeight:700}}>{m.name}</div>
+                    <div style={{fontSize:13,fontWeight:700,color:"#F47D20"}}>{m.total}pts</div>
+                    <div style={{fontSize:18,opacity:m.creams>0?1:0.15,filter:m.creams>0?"drop-shadow(0 0 6px #fff)":"none"}}>{m.creams>0?`🍦x${m.creams}`:"🍦"}</div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Launch Buttons */}
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,margin:"6px 0"}}>
+              <button style={{...s.btn,padding:"12px 8px",fontSize:11,background:"#023B96",borderRadius:8}} onClick={()=>setScreen("setup")}>🏒 Draft</button>
+              <button style={{...s.btn,padding:"12px 8px",fontSize:11,background:"#1e2a3a",borderRadius:8}} onClick={()=>setScreen("scoring")}>📊 Scoring</button>
+              <button style={{...s.btn,padding:"12px 8px",fontSize:11,background:"#1e2a3a",borderRadius:8}} onClick={()=>setScreen("standings")}>🏆 Standings</button>
+            </div>
+
+            {/* Next 4 Weeks Schedule */}
+            {(()=>{
+              const today = new Date();
+              today.setHours(0,0,0,0);
+              const in28 = new Date(today); in28.setDate(today.getDate()+28);
+              const upcoming = ISLANDERS_SCHEDULE.filter(g=>g.d>=today && g.d<=in28);
+              const nextGame = ISLANDERS_SCHEDULE.find(g=>g.d>=today);
+              const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+              return (
+                <div style={s.card}>
+                  <div style={s.sec}>Next 4 Weeks</div>
+                  {upcoming.length===0 ? (
+                    <div style={{fontSize:12,color:"#556"}}>No games in the next 4 weeks.</div>
+                  ) : upcoming.map((g,idx)=>{
+                    const isNext = g===nextGame;
+                    return (
+                      <div key={idx} style={{display:"flex",alignItems:"center",gap:10,padding:"7px 10px",borderRadius:6,marginBottom:3,background:isNext?"#1a1f30":"#111827",border:isNext?"1px solid #F47D20":"1px solid #1e2a3a"}}>
+                        <div style={{width:52,flexShrink:0,textAlign:"center"}}>
+                          <div style={{fontSize:9,color:"#8899aa"}}>{g.day}</div>
+                          <div style={{fontSize:13,fontWeight:700,color:isNext?"#F47D20":"#e8eaf0"}}>{MONTHS[g.d.getMonth()]} {g.d.getDate()}</div>
+                        </div>
+                        <div style={{flex:1,overflow:"hidden"}}>
+                          <div style={{fontSize:12,fontWeight:700,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{g.home?"vs":"@"} {g.opponent}</div>
+                          <div style={{fontSize:10,color:"#8899aa"}}>{g.time} · {g.home?"UBS Arena":"Away"}</div>
+                        </div>
+                        {isNext&&<div style={{fontSize:9,color:"#F47D20",letterSpacing:1,flexShrink:0}}>NEXT</div>}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
+        {/* ── SETUP ── */
         {screen==="setup"&&(
           <div>
             <div style={s.card}>
