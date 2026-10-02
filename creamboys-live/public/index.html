@@ -439,8 +439,8 @@ function App() {
     app:{height:"100vh",width:"100vw",maxWidth:"100%",overflow:"hidden",display:"flex",flexDirection:"column",background:"#0a0e1a",color:"#e8eaf0",fontFamily:"Georgia,serif",fontSize:12,boxSizing:"border-box"},
     header:{background:"linear-gradient(135deg,#023B96 0%,#023B96 40%,#F47D20 100%)",padding:"10px 16px",display:"flex",alignItems:"center",justifyContent:"center",gap:12,boxShadow:"0 4px 24px #0008",flexShrink:0},
     title:{fontSize:15,fontWeight:900,letterSpacing:3,textTransform:"uppercase",color:"#fff",lineHeight:1.2,textShadow:"0 0 12px #F47D20aa, 2px 2px 0px #023B96",fontFamily:"Arial Black,sans-serif"},
-    nav:{display:"flex",gap:3,padding:"5px 14px",background:"#111827",borderBottom:"1px solid #1e2a3a",flexShrink:0},
-    navBtn:(a)=>({padding:"5px 12px",borderRadius:4,border:"none",cursor:"pointer",fontFamily:"Georgia,serif",fontSize:10,letterSpacing:1,textTransform:"uppercase",background:a?"#F47D20":"#1e2a3a",color:a?"#fff":"#8899aa",fontWeight:a?700:400}),
+    nav:{display:"flex",gap:2,padding:"4px 8px",background:"#111827",borderBottom:"1px solid #1e2a3a",flexShrink:0,overflowX:"auto",WebkitOverflowScrolling:"touch"},
+    navBtn:(a)=>({padding:"5px 12px",borderRadius:4,border:"none",cursor:"pointer",fontFamily:"Georgia,serif",fontSize:10,letterSpacing:1,textTransform:"uppercase",background:a?"#F47D20":"#1e2a3a",color:a?"#fff":"#8899aa",fontWeight:a?700:400,whiteSpace:"nowrap",flexShrink:0}),
     card:{background:"#111827",borderRadius:8,border:"1px solid #1e2a3a",padding:"10px 14px",margin:"6px 0"},
     sec:{fontSize:10,letterSpacing:2,textTransform:"uppercase",color:"#F47D20",marginBottom:7,fontWeight:700},
     btn:{padding:"10px 22px",borderRadius:6,border:"none",cursor:"pointer",fontFamily:"Georgia,serif",fontSize:13,letterSpacing:1,fontWeight:700,background:"#F47D20",color:"#fff",textTransform:"uppercase"},
@@ -486,15 +486,15 @@ function App() {
   return (
     <div style={s.app}>
       <div style={s.header}>
-        <img src={LOGO} alt="logo" style={{width:90,height:90,objectFit:"contain",flexShrink:0}}/>
-        <div style={{textAlign:"center"}}>
-          <div style={s.title}>NY Islanders<br/>Cream Boys Fantasy League</div>
+        <img src={LOGO} alt="logo" style={{width:64,height:64,objectFit:"contain",flexShrink:0}}/>
+        <div style={{textAlign:"center",minWidth:0,flex:1}}>
+          <div style={{fontSize:13,fontWeight:900,letterSpacing:2,textTransform:"uppercase",color:"#fff",lineHeight:1.2,textShadow:"0 0 12px #F47D20aa, 2px 2px 0px #023B96",fontFamily:"Arial Black,sans-serif"}}>NY Islanders<br/>Cream Boys Fantasy</div>
           <div style={{width:"80%",height:2,background:"linear-gradient(90deg,transparent,#F47D20,transparent)",margin:"4px auto"}}></div>
-          <div style={{fontSize:9,color:"#fff",letterSpacing:4,textTransform:"uppercase",fontStyle:"italic",opacity:0.85}}>Creaming together<br/>for every game</div>
+          <div style={{fontSize:8,color:"#fff",letterSpacing:3,textTransform:"uppercase",fontStyle:"italic",opacity:0.85}}>Creaming together for every game</div>
         </div>
       </div>
 
-      <div style={s.nav}>
+      <div style={{...s.nav,overflowX:"auto",flexWrap:"nowrap",WebkitOverflowScrolling:"touch"}}>
         {["home","draft","scoring","standings","lineup","setup"].map(t=>(
           <button key={t} style={s.navBtn(screen===t)} onClick={()=>setScreen(t)}>{t}</button>
         ))}
