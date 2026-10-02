@@ -64,28 +64,27 @@ async function dbSet(key, value) {
 
 // ── App constants ─────────────────────────────────────────────────────────────
 const DEFAULT_ROSTER = [
-  { id: 1,  name: "Simon Holmstrom",     number: 10, position: "LW", line: 1 },
+  { id: 1,  name: "Simon Holmstrom",     number: 92, position: "LW", line: 1 },
   { id: 2,  name: "Bo Horvat",           number: 14, position: "C",  line: 1 },
   { id: 3,  name: "Kyle Palmieri",       number: 21, position: "RW", line: 1 },
   { id: 4,  name: "Matias Maccelli",     number: 26, position: "LW", line: 2 },
   { id: 5,  name: "Calum Ritchie",       number: 64, position: "C",  line: 2 },
-  { id: 6,  name: "Brayden Schenn",      number: 19, position: "RW", line: 2 },
+  { id: 6,  name: "Brayden Schenn",      number: 10, position: "RW", line: 2 },
   { id: 7,  name: "Victor Eklund",       number: 73, position: "LW", line: 3 },
   { id: 8,  name: "Jean-Gabriel Pageau", number: 44, position: "C",  line: 3 },
   { id: 9,  name: "Emil Heineman",       number: 51, position: "RW", line: 3 },
-  { id: 10, name: "Ondrej Palat",        number: 18, position: "LW", line: 4 },
+  { id: 10, name: "Ondrej Palat",        number: 81, position: "LW", line: 4 },
   { id: 11, name: "Casey Cizikas",       number: 53, position: "C",  line: 4 },
-  { id: 12, name: "Anthony Duclair",     number: 95, position: "RW", line: 4 },
-  { id: 13, name: "Mitchell Chaffee",    number: 41, position: "RW", line: 99 },
-  { id: 14, name: "Adam Pelech",         number: 3,  position: "D",  line: 1 },
-  { id: 15, name: "Ryan Pulock",         number: 6,  position: "D",  line: 1 },
-  { id: 16, name: "Matthew Schaefer",    number: 48, position: "D",  line: 2 },
-  { id: 17, name: "Tony DeAngelo",       number: 77, position: "D",  line: 2 },
-  { id: 18, name: "Alexander Romanov",   number: 28, position: "D",  line: 3 },
-  { id: 19, name: "Scott Mayfield",      number: 24, position: "D",  line: 3 },
+  { id: 12, name: "Anthony Duclair",     number: 11, position: "RW", line: 4 },
+  { id: 13, name: "Adam Pelech",         number: 3,  position: "D",  line: 1 },
+  { id: 14, name: "Matthew Schaefer",    number: 48, position: "D",  line: 1 },
+  { id: 15, name: "Alexander Romanov",   number: 28, position: "D",  line: 2 },
+  { id: 16, name: "Ryan Pulock",         number: 6,  position: "D",  line: 2 },
+  { id: 17, name: "Logan Stanley",       number: 64, position: "D",  line: 3 },
+  { id: 18, name: "Tony DeAngelo",       number: 77, position: "D",  line: 3 },
+  { id: 19, name: "Mitchell Chaffee",    number: 41, position: "RW", line: 99 },
   { id: 20, name: "Matthew Kessel",      number: 46, position: "D",  line: 99 },
   { id: 21, name: "Kashawn Aitcheson",   number: 25, position: "D",  line: 99 },
-  { id: 22, name: "Logan Stanley",       number: 64, position: "D",  line: 99 },
 ];
 
 
@@ -212,8 +211,6 @@ function App() {
   const [customDraftOrder, setCustomDraftOrder] = useState(null);
   const [editingGameId, setEditingGameId] = useState(null);
   const [rulesOpen, setRulesOpen] = useState(false);
-  const [setupPw, setSetupPw] = useState('');
-  const [setupPwErr, setSetupPwErr] = useState(false);
   const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('cb_auth') === 'true');
   const [pwInput, setPwInput] = useState('');
   const [pwError, setPwError] = useState(false);
@@ -520,7 +517,7 @@ function App() {
 
       <div style={{...s.nav,overflowX:"auto",flexWrap:"nowrap",WebkitOverflowScrolling:"touch"}}>
         {["home","draft","scoring","standings","setup"].map(t=>(
-          <button key={t} style={s.navBtn(screen===t)} onClick={()=>setScreen(t==="setup"?"setup-lock":t)}>{t}</button>
+          <button key={t} style={s.navBtn(screen===t)} onClick={()=>setScreen(t)}>{t}</button>
         ))}
       </div>
 
@@ -820,32 +817,6 @@ function App() {
         )}
 
         {/* ── LINEUP ── */}
-        {screen==="setup-lock"&&(
-          <div style={{...s.card,textAlign:"center",padding:"50px 20px",marginTop:20}}>
-            <div style={{fontSize:48,marginBottom:16}}>🔒</div>
-            <div style={{fontSize:16,fontWeight:700,color:"#e8eaf0",marginBottom:8}}>Setup Access</div>
-            <div style={{fontSize:12,color:"#8899aa",marginBottom:24}}>Enter password to continue</div>
-            <input
-              type="password"
-              placeholder="Password"
-              value={setupPw}
-              autoFocus
-              onChange={e=>{setSetupPw(e.target.value);setSetupPwErr(false);}}
-              onKeyDown={e=>{
-                if(e.key==="Enter"){
-                  if(setupPw==="CreamMe"){setScreen("setup");setSetupPw("");setSetupPwErr(false);}
-                  else{setSetupPwErr(true);setSetupPw("");}
-                }
-              }}
-              style={{...s.inp,textAlign:"center",letterSpacing:4,fontSize:18,marginBottom:12,maxWidth:220,display:"block",margin:"0 auto 12px"}}
-            />
-            {setupPwErr&&<div style={{fontSize:12,color:"#ff6666",marginBottom:12}}>Incorrect password</div>}
-            <button style={{...s.btn,fontSize:14,marginTop:8}} onClick={()=>{
-              if(setupPw==="CreamMe"){setScreen("setup");setSetupPw("");setSetupPwErr(false);}
-              else{setSetupPwErr(true);setSetupPw("");}
-            }}>Unlock 🔓</button>
-          </div>
-        )}
 
                 {screen==="setup"&&(
           <div>
