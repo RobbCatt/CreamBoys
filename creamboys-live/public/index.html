@@ -210,6 +210,8 @@ function App() {
       const savedCurrentGame = await dbGet("currentGame");
       if (Array.isArray(savedGames)) setGames(savedGames);
       if (Array.isArray(savedRoster)) setRoster(savedRoster);
+      const savedCustomOrder = await dbGet("customDraftOrder");
+      if (Array.isArray(savedCustomOrder)) setCustomDraftOrder(savedCustomOrder);
       if (savedCurrentGame && !savedCurrentGame.finalized) {
         setCurrentGame(savedCurrentGame);
         setDraftPick(savedCurrentGame.picks.filter(Boolean).length);
@@ -223,6 +225,7 @@ function App() {
   useEffect(() => { if (games.length === 0 || loading) return; dbSet("games", games).then(() => setDbStatus("Saved " + new Date().toLocaleTimeString())); }, [games]);
   useEffect(() => { if (!currentGame || loading) return; dbSet("currentGame", currentGame); }, [currentGame, draftPick]);
   useEffect(() => { if (loading) return; dbSet("roster", roster); }, [roster]);
+  useEffect(() => { if (loading) return; dbSet("customDraftOrder", customDraftOrder); }, [customDraftOrder]);
 
   useEffect(() => {
     const id = setInterval(async () => {
@@ -301,6 +304,7 @@ function App() {
       for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
     } else { order=buildDraftOrder(games[games.length-1].scores,games[games.length-1].firstGoalManagerIdx); }
     setCurrentGame({id:games.length+1,date:new Date().toLocaleDateString(),draftOrder:order,picks:Array(18).fill(null),scores:Array(6).fill(0),playerGoals:{},playerAssists:{},firstGoalManagerIdx:null,firstGoalPlayerId:null,finalized:false});
+    setCustomDraftOrder(null); dbSet("customDraftOrder",null);
     setDraftPick(0); setScreen("draft");
   }
 
@@ -445,7 +449,7 @@ function App() {
                 <div style={s.sec}>Next Draft Order</div>
                 {(()=>{
                   const prev=games[games.length-1];
-                  const nextOrder=buildDraftOrder(prev.scores,prev.firstGoalManagerIdx);
+                  const nextOrder=customDraftOrder||buildDraftOrder(prev.scores,prev.firstGoalManagerIdx);
                   const col1=nextOrder.slice(0,3),col2=nextOrder.slice(3,6);
                   return(
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}>
@@ -701,7 +705,7 @@ function App() {
                       </div>
                     </div>
                   ))}
-                  <button style={{fontSize:10,color:"#ff6666",background:"none",border:"none",cursor:"pointer",marginTop:4}} onClick={()=>{setCustomDraftOrder(null);setEditingDraftOrder(false);}}>↺ Reset to auto</button>
+                  <button style={{fontSize:10,color:"#ff6666",background:"none",border:"none",cursor:"pointer",marginTop:4}} onClick={()=>{setCustomDraftOrder(null);setEditingDraftOrder(false);dbSet("customDraftOrder",null);}}>↺ Reset to auto</button>
                 </div>
               ):(
                 <div>
