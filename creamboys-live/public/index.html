@@ -541,10 +541,9 @@ function App() {
             </div>
 
             {/* Launch Buttons */}
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,margin:"6px 0"}}>
-              <button style={{...s.btn,padding:"12px 8px",fontSize:11,background:"#023B96",borderRadius:8}} onClick={()=>setScreen("setup")}>🏒 Draft</button>
-              <button style={{...s.btn,padding:"12px 8px",fontSize:11,background:"#1e2a3a",borderRadius:8}} onClick={()=>setScreen("scoring")}>📊 Scoring</button>
-              <button style={{...s.btn,padding:"12px 8px",fontSize:11,background:"#1e2a3a",borderRadius:8}} onClick={()=>setScreen("standings")}>🏆 Standings</button>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,margin:"6px 0"}}>
+              <button style={{...s.btn,padding:"14px 8px",fontSize:12,background:"#023B96",borderRadius:8}} onClick={()=>setScreen("draft")}>🏒 Tonight's Draft</button>
+              <button style={{...s.btn,padding:"14px 8px",fontSize:12,background:"#F47D20",borderRadius:8}} onClick={()=>setScreen("scoring")}>📊 Tonight's Scoring</button>
             </div>
 
             {/* Next Game Draft Order */}
