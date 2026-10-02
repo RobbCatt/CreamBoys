@@ -118,6 +118,7 @@ function App() {
   const [editingDraftOrder, setEditingDraftOrder] = useState(false);
   const [customDraftOrder, setCustomDraftOrder] = useState(null);
   const [editingGameId, setEditingGameId] = useState(null);
+  const [rulesOpen, setRulesOpen] = useState(false);
   const [editGameScores, setEditGameScores] = useState({});
   const [dbStatus, setDbStatus] = useState("");
   const [loading, setLoading] = useState(true);
@@ -431,15 +432,18 @@ function App() {
               )}
             </div>
             <div style={s.card}>
-              <div style={s.sec}>Draft Rules</div>
-              <div style={{fontSize:11,color:"#8899aa",lineHeight:1.6}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer"}} onClick={()=>setRulesOpen(r=>!r)}>
+                <div style={s.sec}>Draft Rules</div>
+                <span style={{color:"#F47D20",fontSize:14}}>{rulesOpen?"▲":"▼"}</span>
+              </div>
+              {rulesOpen&&<div style={{fontSize:11,color:"#8899aa",lineHeight:1.6,marginTop:7}}>
                 <div>📋 <b style={{color:"#e8eaf0"}}>Round 1 & 2:</b> Positions 1→6</div>
                 <div>📋 <b style={{color:"#e8eaf0"}}>Round 3:</b> Positions 5→4→3→2→1→6</div>
                 <div>🏅 <b style={{color:"#e8eaf0"}}>Seeding (picks 1-5):</b> Most points in previous game</div>
                 <div>🍦 <b style={{color:"#e8eaf0"}}>Pick 6:</b> Drafted first goal scorer last game</div>
                 <div>⭐ <b style={{color:"#e8eaf0"}}>Scoring:</b> 1pt per goal + 1pt per assist</div>
                 <div>🔀 <b style={{color:"#e8eaf0"}}>Game 1:</b> Random seeding</div>
-              </div>
+              </div>}
             </div>
             {dbStatus&&<div style={{fontSize:10,color:"#8899aa",marginBottom:6}}>{dbStatus}</div>}
             <button style={{...s.btn,fontSize:12,padding:"8px 22px"}} onClick={startNewGame}>
