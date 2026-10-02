@@ -199,7 +199,6 @@ function buildDraftOrder(prevScores, firstGoalManagerIdx) {
 
 function App() {
   const [screen, setScreen] = useState("home");
-  const setScreenSafe = (s) => { if (s !== "setup") setSetupUnlocked(false); setScreen(s); };
   const [games, setGames] = useState([]);
   const [currentGame, setCurrentGame] = useState(null);
   const [draftPick, setDraftPick] = useState(0);
@@ -214,9 +213,6 @@ function App() {
   const [customDraftOrder, setCustomDraftOrder] = useState(null);
   const [editingGameId, setEditingGameId] = useState(null);
   const [rulesOpen, setRulesOpen] = useState(false);
-  const [setupUnlocked, setSetupUnlocked] = useState(false);
-  const [setupPwInput, setSetupPwInput] = useState('');
-  const [setupPwError, setSetupPwError] = useState(false);
   const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('cb_auth') === 'true');
   const [pwInput, setPwInput] = useState('');
   const [pwError, setPwError] = useState(false);
@@ -441,7 +437,7 @@ function App() {
     MANAGERS.forEach((_,i)=>{(drafted[i]||[]).forEach(pid=>{scores[i]+=(currentGame.playerGoals[pid]||0)+(currentGame.playerAssists[pid]||0);});});
     const finalGame={...currentGame,scores,finalized:true};
     setGames(g=>[...g,finalGame]);
-    setCurrentGame(null); setEditMode(false); setScreenSafe("standings");
+    setCurrentGame(null); setEditMode(false); setScreen("standings");
     dbSet("currentGame", null);
   }
 
@@ -513,7 +509,14 @@ function App() {
 
       <div style={{...s.nav,overflowX:"auto",flexWrap:"nowrap",WebkitOverflowScrolling:"touch"}}>
         {["home","draft","scoring","standings","setup"].map(t=>(
-          <button key={t} style={s.navBtn(screen===t)} onClick={()=>setScreenSafe(t)}>{t}</button>
+          <button key={t} style={s.navBtn(screen===t)} onClick={()=>{
+              if(t==="setup"){
+                const pw=prompt("Enter Setup password:");
+                if(pw==="CreamMe") setScreen("setup");
+              } else {
+                setScreen(t);
+              }
+            }}>{t}</button>
         ))}
       </div>
 
@@ -559,8 +562,8 @@ function App() {
 
             {/* Launch Buttons */}
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,margin:"6px 0"}}>
-              <button style={{...s.btn,padding:"14px 8px",fontSize:12,background:"#023B96",borderRadius:8}} onClick={()=>setScreenSafe("draft")}>🏒 Tonight's Draft</button>
-              <button style={{...s.btn,padding:"14px 8px",fontSize:12,background:"#F47D20",borderRadius:8}} onClick={()=>setScreenSafe("scoring")}>📊 Tonight's Scoring</button>
+              <button style={{...s.btn,padding:"14px 8px",fontSize:12,background:"#023B96",borderRadius:8}} onClick={()=>setScreen("draft")}>🏒 Tonight's Draft</button>
+              <button style={{...s.btn,padding:"14px 8px",fontSize:12,background:"#F47D20",borderRadius:8}} onClick={()=>setScreen("scoring")}>📊 Tonight's Scoring</button>
             </div>
 
             {/* Next Game Draft Order */}
@@ -681,7 +684,7 @@ function App() {
               </div>
               <div style={{display:"flex",flexDirection:"column",gap:8,marginTop:6}}>
                 <button style={{...s.btn,width:"100%",fontSize:12,padding:"10px 16px",background:draftPick===0?"#1a1a2a":"#1e2a3a",color:draftPick===0?"#334":"#e8eaf0",cursor:draftPick===0?"default":"pointer"}} onClick={undoLastPick} disabled={draftPick===0}>↩ Undo Last Pick</button>
-                {draftPick>=18&&<button style={{...s.btn,width:"100%",fontSize:14,padding:13}} onClick={()=>setScreenSafe("scoring")}>Go to Scoring →</button>}
+                {draftPick>=18&&<button style={{...s.btn,width:"100%",fontSize:14,padding:13}} onClick={()=>setScreen("scoring")}>Go to Scoring →</button>}
               </div>
             </div>
           </div>
@@ -808,34 +811,13 @@ function App() {
                 {isEditingThis&&<div style={{fontSize:10,color:"#8899aa",marginTop:8}}>Tap 🍦 to assign/remove cream for this game</div>}
               </div>
             );})}
-            <button style={{...s.btn,marginTop:6}} onClick={()=>setScreenSafe("setup")}>{games.length>0?`Start Game ${games.length+1}`:"Start Game 1"}</button>
+            <button style={{...s.btn,marginTop:6}} onClick={()=>setScreen("setup")}>{games.length>0?`Start Game ${games.length+1}`:"Start Game 1"}</button>
           </div>
         )}
 
         {/* ── LINEUP ── */}
         {screen==="setup"&&(
           <div>
-            {!setupUnlocked ? (
-              <div style={{...s.card,textAlign:"center",padding:"40px 20px"}}>
-                <div style={{fontSize:36,marginBottom:12}}>🔒</div>
-                <div style={{fontSize:14,color:"#8899aa",marginBottom:20}}>Enter password to access Setup</div>
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={setupPwInput}
-                  onChange={e=>{setSetupPwInput(e.target.value);setSetupPwError(false);}}
-                  onKeyDown={e=>{if(e.key==="Enter"){if(setupPwInput==="CreamMe"){setSetupUnlocked(true);setSetupPwInput("");}else{setSetupPwError(true);setSetupPwInput("");}}}}
-                  style={{...s.inp,textAlign:"center",letterSpacing:4,fontSize:16,marginBottom:10,maxWidth:200}}
-                  autoFocus
-                />
-                {setupPwError&&<div style={{fontSize:11,color:"#ff6666",marginBottom:10}}>Incorrect password</div>}
-                <button style={{...s.btn,fontSize:13}} onClick={()=>{
-                  if(setupPwInput==="CreamMe"){setSetupUnlocked(true);setSetupPwInput("");}
-                  else{setSetupPwError(true);setSetupPwInput("");}
-                }}>Unlock 🔓</button>
-              </div>
-            ) : (
-            <div>
 
             {/* Start Game Button */}
             <button style={{...s.btn,width:"100%",fontSize:15,padding:"14px",marginBottom:8,boxShadow:"0 4px 16px #F47D2066"}} onClick={startNewGame}>
@@ -943,15 +925,13 @@ function App() {
               </div>
             ))}
           </div>
-            )}
-          </div>
         )}
 
         {(screen==="draft"||screen==="scoring")&&!currentGame&&(
           <div style={{...s.card,textAlign:"center",padding:40}}>
             <div style={{fontSize:36,marginBottom:10}}>🏒</div>
             <div style={{fontSize:14,color:"#8899aa",marginBottom:18}}>No active game. Start one from Setup.</div>
-            <button style={s.btn} onClick={()=>setScreenSafe("setup")}>Go to Setup</button>
+            <button style={s.btn} onClick={()=>setScreen("setup")}>Go to Setup</button>
           </div>
         )}
       </div>
