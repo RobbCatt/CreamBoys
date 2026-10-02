@@ -119,6 +119,9 @@ function App() {
   const [customDraftOrder, setCustomDraftOrder] = useState(null);
   const [editingGameId, setEditingGameId] = useState(null);
   const [rulesOpen, setRulesOpen] = useState(false);
+  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('cb_auth') === 'true');
+  const [pwInput, setPwInput] = useState('');
+  const [pwError, setPwError] = useState(false);
   const [editGameScores, setEditGameScores] = useState({});
   const [dbStatus, setDbStatus] = useState("");
   const [loading, setLoading] = useState(true);
@@ -357,6 +360,32 @@ function App() {
     <div style={{...s.app,alignItems:"center",justifyContent:"center"}}>
       <img src={LOGO} style={{width:80,height:80,objectFit:"contain",marginBottom:20}}/>
       <div style={{color:"#F47D20",fontSize:14,letterSpacing:2}}>LOADING...</div>
+    </div>
+  );
+
+  if(!unlocked) return (
+    <div style={{...s.app,alignItems:"center",justifyContent:"center",gap:20}}>
+      <img src={LOGO} style={{width:110,height:110,objectFit:"contain"}}/>
+      <div style={{textAlign:"center"}}>
+        <div style={{fontSize:18,fontWeight:900,letterSpacing:3,color:"#fff",fontFamily:"Arial Black,sans-serif"}}>NY ISLANDERS</div>
+        <div style={{fontSize:13,fontWeight:900,letterSpacing:2,color:"#F47D20",fontFamily:"Arial Black,sans-serif"}}>CREAM BOYS FANTASY</div>
+      </div>
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10,width:220}}>
+        <input
+          type="password"
+          placeholder="Enter password"
+          value={pwInput}
+          onChange={e=>{setPwInput(e.target.value);setPwError(false);}}
+          onKeyDown={e=>{if(e.key==="Enter"){if(pwInput==="LGI"){sessionStorage.setItem("cb_auth","true");setUnlocked(true);}else{setPwError(true);setPwInput("");}}}}
+          style={{...s.inp,textAlign:"center",letterSpacing:4,fontSize:16,width:"100%"}}
+          autoFocus
+        />
+        {pwError&&<div style={{fontSize:11,color:"#ff6666"}}>Incorrect password</div>}
+        <button style={{...s.btn,width:"100%",fontSize:14}} onClick={()=>{
+          if(pwInput==="LGI"){sessionStorage.setItem("cb_auth","true");setUnlocked(true);}
+          else{setPwError(true);setPwInput("");}
+        }}>LET'S GO ISLANDERS 🏒</button>
+      </div>
     </div>
   );
 
