@@ -554,13 +554,25 @@ function App() {
                 {(()=>{
                   const prev = games[games.length-1];
                   const nextOrder = buildDraftOrder(prev.scores, prev.firstGoalManagerIdx);
-                  return nextOrder.map((mId, pos) => (
-                    <div key={pos} style={{display:"flex",alignItems:"center",gap:8,marginBottom:5}}>
-                      <div style={{width:26,height:26,borderRadius:"50%",background:pos===5?"#023B96":"#F47D20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:"#fff",flexShrink:0}}>{pos+1}</div>
-                      <span style={{fontSize:14,flex:1,fontWeight:700}}>{MANAGERS[mId]}</span>
-                      {pos===5 && <span style={{fontSize:10,color:"#8899aa",letterSpacing:1}}>PICKS LAST</span>}
+                  const col1 = nextOrder.slice(0,3);
+                  const col2 = nextOrder.slice(3,6);
+                  return (
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}>
+                      {[0,1,2].map(i => (
+                        <React.Fragment key={i}>
+                          <div style={{display:"flex",alignItems:"center",gap:6,padding:"3px 0"}}>
+                            <div style={{width:22,height:22,borderRadius:"50%",background:"#F47D20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:"#fff",flexShrink:0}}>{i+1}</div>
+                            <span style={{fontSize:13,fontWeight:700}}>{MANAGERS[col1[i]]}</span>
+                          </div>
+                          <div style={{display:"flex",alignItems:"center",gap:6,padding:"3px 0"}}>
+                            <div style={{width:22,height:22,borderRadius:"50%",background:i===2?"#023B96":"#F47D20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:"#fff",flexShrink:0}}>{i+4}</div>
+                            <span style={{fontSize:13,fontWeight:700}}>{MANAGERS[col2[i]]}</span>
+                            {i===2&&<span style={{fontSize:9,color:"#8899aa"}}>LAST</span>}
+                          </div>
+                        </React.Fragment>
+                      ))}
                     </div>
-                  ));
+                  );
                 })()}
               </div>
             )}
@@ -575,7 +587,7 @@ function App() {
               const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
               return (
                 <div style={s.card}>
-                  <div style={s.sec}>Next 4 Weeks</div>
+                  <div style={s.sec}>Upcoming Games</div>
                   {upcoming.length===0 ? (
                     <div style={{fontSize:12,color:"#556"}}>No games in the next 4 weeks.</div>
                   ) : upcoming.map((g,idx)=>{
