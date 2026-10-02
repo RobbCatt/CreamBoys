@@ -213,6 +213,9 @@ function App() {
   const [customDraftOrder, setCustomDraftOrder] = useState(null);
   const [editingGameId, setEditingGameId] = useState(null);
   const [rulesOpen, setRulesOpen] = useState(false);
+  const [setupUnlocked, setSetupUnlocked] = useState(false);
+  const [setupPwInput, setSetupPwInput] = useState('');
+  const [setupPwError, setSetupPwError] = useState(false);
   const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('cb_auth') === 'true');
   const [pwInput, setPwInput] = useState('');
   const [pwError, setPwError] = useState(false);
@@ -811,6 +814,27 @@ function App() {
         {/* ── LINEUP ── */}
         {screen==="setup"&&(
           <div>
+            {!setupUnlocked ? (
+              <div style={{...s.card,textAlign:"center",padding:"40px 20px"}}>
+                <div style={{fontSize:36,marginBottom:12}}>🔒</div>
+                <div style={{fontSize:14,color:"#8899aa",marginBottom:20}}>Enter password to access Setup</div>
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={setupPwInput}
+                  onChange={e=>{setSetupPwInput(e.target.value);setSetupPwError(false);}}
+                  onKeyDown={e=>{if(e.key==="Enter"){if(setupPwInput==="CreamMe"){setSetupUnlocked(true);setSetupPwInput("");}else{setSetupPwError(true);setSetupPwInput("");}}}}
+                  style={{...s.inp,textAlign:"center",letterSpacing:4,fontSize:16,marginBottom:10,maxWidth:200}}
+                  autoFocus
+                />
+                {setupPwError&&<div style={{fontSize:11,color:"#ff6666",marginBottom:10}}>Incorrect password</div>}
+                <button style={{...s.btn,fontSize:13}} onClick={()=>{
+                  if(setupPwInput==="CreamMe"){setSetupUnlocked(true);setSetupPwInput("");}
+                  else{setSetupPwError(true);setSetupPwInput("");}
+                }}>Unlock 🔓</button>
+              </div>
+            ) : (
+            <div>
 
             {/* Start Game Button */}
             <button style={{...s.btn,width:"100%",fontSize:15,padding:"14px",marginBottom:8,boxShadow:"0 4px 16px #F47D2066"}} onClick={startNewGame}>
@@ -917,6 +941,8 @@ function App() {
                 {roster.filter(p=>p.position===pos).length===0&&<div style={{fontSize:11,color:"#445"}}>No players.</div>}
               </div>
             ))}
+          </div>
+            )}
           </div>
         )}
 
