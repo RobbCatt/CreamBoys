@@ -171,12 +171,17 @@ function App() {
       }
       // Sync finalized games
       const remoteGames = await dbGet("games");
-      if (Array.isArray(remoteGames) && remoteGames.length !== games.length) {
+      if (Array.isArray(remoteGames) && JSON.stringify(remoteGames) !== JSON.stringify(games)) {
         setGames(remoteGames);
+      }
+      // Sync roster
+      const remoteRoster = await dbGet("roster");
+      if (Array.isArray(remoteRoster) && JSON.stringify(remoteRoster) !== JSON.stringify(roster)) {
+        setRoster(remoteRoster);
       }
     }, 3000);
     return () => clearInterval(id);
-  }, [currentGame?.id, games.length]);
+  }, [currentGame?.id]);
 
   // Save roster to Supabase when it changes
   useEffect(() => {
@@ -566,7 +571,7 @@ function App() {
           <div>
             <div style={s.card}>
               <div style={s.sec}>Season Standings</div>
-              {[...MANAGERS.map((name,i)=>({name,i,total:totalScores[i],creams:creamCounts[i]}))].sort((a,b)=>b.total-a.total).map((m,rank)=>(
+              {[...MANAGERS.map((name,i)=>({name,i,total:totalScores[i],creams:creamCounts[i]}))].sort((a,b)=>b.creams-a.creams||b.total-a.total).map((m,rank)=>(
                 <div key={m.i} style={{display:"flex",alignItems:"center",gap:8,padding:"7px 12px",borderRadius:7,border:"1px solid #1e2a3a",marginBottom:5,background:rank===0?"#1a1f30":"#111827"}}>
                   <div style={{fontSize:20,fontWeight:900,color:rank===0?"#F47D20":"#334",width:28}}>{rank+1}</div>
                   <div style={{flex:1}}>
