@@ -603,19 +603,20 @@ function App() {
                     }}>{isEditingThis?"✅ Save":"✏️ Edit"}</button>
                 </div>
                 <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
-                  {MANAGERS.map((name,i)=>(
-                    <div key={i} style={{padding:"7px 13px",background:"#0d1117",borderRadius:6,minWidth:80}}>
-                      <div style={{fontSize:11,color:"#8899aa",marginBottom:4}}>{name}</div>
+                  {(g.draftOrder||MANAGERS.map((_,i)=>i)).map((managerId,pos)=>(
+                    <div key={managerId} style={{padding:"7px 13px",background:"#0d1117",borderRadius:6,minWidth:80}}>
+                      <div style={{fontSize:9,color:"#556",marginBottom:2}}>Pick {pos+1}</div>
+                      <div style={{fontSize:11,color:"#8899aa",marginBottom:4}}>{MANAGERS[managerId]}</div>
                       {isEditingThis?(
                         <div>
-                          <input type="number" min="0" style={{...s.inp,width:56,textAlign:"center",padding:"2px 4px",fontSize:15,fontWeight:700,marginBottom:4}} value={editGameScores.scores[i]} onChange={e=>{const sc=[...editGameScores.scores];sc[i]=Math.max(0,parseInt(e.target.value)||0);setEditGameScores(es=>({...es,scores:sc}));}}/>
+                          <input type="number" min="0" style={{...s.inp,width:56,textAlign:"center",padding:"2px 4px",fontSize:15,fontWeight:700,marginBottom:4}} value={editGameScores.scores[managerId]} onChange={e=>{const sc=[...editGameScores.scores];sc[managerId]=Math.max(0,parseInt(e.target.value)||0);setEditGameScores(es=>({...es,scores:sc}));}}/>
                           <div style={{fontSize:9,color:"#8899aa",marginBottom:4}}>pts</div>
-                          <span onClick={()=>setEditGameScores(es=>({...es,firstGoalManagerIdx:es.firstGoalManagerIdx===i?null:i}))} style={{fontSize:22,opacity:editGameScores.firstGoalManagerIdx===i?1:0.15,cursor:"pointer",filter:editGameScores.firstGoalManagerIdx===i?"drop-shadow(0 0 6px #fff)":"none"}}>🍦</span>
+                          <span onClick={()=>setEditGameScores(es=>({...es,firstGoalManagerIdx:es.firstGoalManagerIdx===managerId?null:managerId}))} style={{fontSize:22,opacity:editGameScores.firstGoalManagerIdx===managerId?1:0.15,cursor:"pointer",filter:editGameScores.firstGoalManagerIdx===managerId?"drop-shadow(0 0 6px #fff)":"none"}}>🍦</span>
                         </div>
                       ):(
                         <div>
-                          <div style={{fontSize:18,fontWeight:700,color:"#F47D20"}}>{g.scores[i]} pts</div>
-                          {g.firstGoalManagerIdx===i&&<div style={{fontSize:18,marginTop:2}}>🍦</div>}
+                          <div style={{fontSize:18,fontWeight:700,color:"#F47D20"}}>{g.scores[managerId]} pts</div>
+                          {g.firstGoalManagerIdx===managerId&&<div style={{fontSize:18,marginTop:2}}>🍦</div>}
                         </div>
                       )}
                     </div>
