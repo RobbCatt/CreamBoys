@@ -64,29 +64,28 @@ async function dbSet(key, value) {
 
 // ── App constants ─────────────────────────────────────────────────────────────
 const DEFAULT_ROSTER = [
-  { id: 1,  name: "Simon Holmstrom",     number: 10, position: "LW" },
-  { id: 2,  name: "Bo Horvat",           number: 14, position: "C"  },
-  { id: 3,  name: "Victor Eklund",       number: 73, position: "RW" },
-  { id: 4,  name: "Brayden Schenn",      number: 19, position: "C"  },
-  { id: 5,  name: "Mathew Barzal",       number: 13, position: "C"  },
-  { id: 6,  name: "Anthony Duclair",     number: 10, position: "LW" },
-  { id: 7,  name: "Jean-Gabriel Pageau", number: 44, position: "C"  },
-  { id: 8,  name: "Emil Heineman",       number: 51, position: "LW" },
-  { id: 9,  name: "Ondrej Palat",        number: 18, position: "LW" },
-  { id: 10, name: "Casey Cizikas",       number: 53, position: "C"  },
-  { id: 11, name: "Kyle Palmieri",       number: 21, position: "RW" },
-  { id: 12, name: "Matias Maccelli",     number: 24, position: "LW" },
-  { id: 13, name: "Mitchell Chaffee",    number: 41, position: "RW" },
-  { id: 14, name: "Kyle MacLean",        number: 32, position: "C"  },
-  { id: 15, name: "Adam Pelech",         number: 3,  position: "D"  },
-  { id: 16, name: "Matthew Schaefer",    number: 48, position: "D"  },
-  { id: 17, name: "Ryan Pulock",         number: 6,  position: "D"  },
-  { id: 18, name: "Tony DeAngelo",       number: 77, position: "D"  },
-  { id: 19, name: "Alexander Romanov",   number: 28, position: "D"  },
-  { id: 20, name: "Adam Boqvist",        number: 27, position: "D"  },
-  { id: 21, name: "Scott Mayfield",      number: 24, position: "D"  },
-  { id: 22, name: "Matthew Kessel",      number: 46, position: "D"  },
-  { id: 23, name: "Malte Gustafsson",    number: 55, position: "D"  },
+  { id: 1,  name: "Simon Holmstrom",     number: 10, position: "LW", line: 1 },
+  { id: 2,  name: "Bo Horvat",           number: 14, position: "C",  line: 1 },
+  { id: 3,  name: "Kyle Palmieri",       number: 21, position: "RW", line: 1 },
+  { id: 4,  name: "Matias Maccelli",     number: 26, position: "LW", line: 2 },
+  { id: 5,  name: "Calum Ritchie",       number: 64, position: "C",  line: 2 },
+  { id: 6,  name: "Brayden Schenn",      number: 19, position: "RW", line: 2 },
+  { id: 7,  name: "Victor Eklund",       number: 73, position: "LW", line: 3 },
+  { id: 8,  name: "Jean-Gabriel Pageau", number: 44, position: "C",  line: 3 },
+  { id: 9,  name: "Emil Heineman",       number: 51, position: "RW", line: 3 },
+  { id: 10, name: "Ondrej Palat",        number: 18, position: "LW", line: 4 },
+  { id: 11, name: "Casey Cizikas",       number: 53, position: "C",  line: 4 },
+  { id: 12, name: "Anthony Duclair",     number: 95, position: "RW", line: 4 },
+  { id: 13, name: "Mitchell Chaffee",    number: 41, position: "RW", line: 99 },
+  { id: 14, name: "Adam Pelech",         number: 3,  position: "D",  line: 1 },
+  { id: 15, name: "Ryan Pulock",         number: 6,  position: "D",  line: 1 },
+  { id: 16, name: "Matthew Schaefer",    number: 48, position: "D",  line: 2 },
+  { id: 17, name: "Tony DeAngelo",       number: 77, position: "D",  line: 2 },
+  { id: 18, name: "Alexander Romanov",   number: 28, position: "D",  line: 3 },
+  { id: 19, name: "Scott Mayfield",      number: 24, position: "D",  line: 3 },
+  { id: 20, name: "Matthew Kessel",      number: 46, position: "D",  line: 99 },
+  { id: 21, name: "Kashawn Aitcheson",   number: 25, position: "D",  line: 99 },
+  { id: 22, name: "Logan Stanley",       number: 64, position: "D",  line: 99 },
 ];
 
 
@@ -444,7 +443,17 @@ function App() {
   }
 
   const draftedIds=currentGame?currentGame.picks.filter(Boolean).map(p=>p.playerId):[];
-  const available=roster.filter(p=>!draftedIds.includes(p.id)&&(p.name.toLowerCase().includes(rosterFilter.toLowerCase())||p.position.toLowerCase().includes(rosterFilter.toLowerCase())));
+  const posOrder = {"LW":0,"C":1,"RW":2,"D":3};
+  const available=roster
+    .filter(p=>!draftedIds.includes(p.id)&&(p.name.toLowerCase().includes(rosterFilter.toLowerCase())||p.position.toLowerCase().includes(rosterFilter.toLowerCase())))
+    .sort((a,b)=>{
+      // D after forwards
+      const aIsD = a.position==="D", bIsD = b.position==="D";
+      if(aIsD!==bIsD) return aIsD?1:-1;
+      // Sort by line then position slot
+      if(a.line!==b.line) return (a.line||99)-(b.line||99);
+      return (posOrder[a.position]||0)-(posOrder[b.position]||0);
+    });
   const curMgrPos=draftPick<18?DRAFT_SEQUENCE[draftPick]:null;
   const curMgrId=curMgrPos!==null&&currentGame?currentGame.draftOrder[curMgrPos]:null;
   const totalScores=MANAGERS.map((_,i)=>games.reduce((sum,g)=>sum+(g.scores[i]||0),0));
@@ -907,28 +916,65 @@ function App() {
 
 
             {/* Line Up */}
-            <div style={s.card}>
-              <div style={s.sec}>Line Up</div>
-              <div style={{fontSize:11,color:"#8899aa",marginBottom:10}}>Add, edit or remove players manually.</div>
-              <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
-                <button style={{...s.btn,fontSize:11,padding:"6px 14px",background:rosterLoading?"#334":"#023B96"}} onClick={refreshRoster} disabled={rosterLoading}>
-                  {rosterLoading?"⏳ Updating...":"🔄 Auto-Refresh Roster"}
-                </button>
-                <button style={{...s.btn,fontSize:11,padding:"6px 14px",background:"#1e2a3a"}} onClick={()=>{
-                  const name=prompt("Player full name:");if(!name)return;
-                  const pos=prompt("Position (LW,C,RW,D):")?.toUpperCase();if(!["LW","C","RW","D"].includes(pos))return alert("Invalid position");
-                  const num=parseInt(prompt("Jersey number:"))||0;
-                  const newId=Math.max(...roster.map(r=>r.id),0)+1;
-                  setRoster(r=>[...r,{id:newId,name,number:num,position:pos}]);
-                }}>+ Add Player</button>
-                <button style={{...s.btn,fontSize:11,padding:"6px 14px",background:"#6C757D"}} onClick={()=>{if(confirm("Reset to default 2026-27 roster?"))setRoster(DEFAULT_ROSTER);}}>↺ Reset</button>
-              </div>
-              <span style={{fontSize:10,color:"#8899aa"}}>Last updated: {rosterDate} · {roster.length} players</span>
-            </div>
-            {["LW","C","RW","D"].map(pos=>(
-              <div key={pos} style={s.card}>
-                <div style={s.sec}>{pos==="LW"?"Left Wing":pos==="C"?"Center":pos==="RW"?"Right Wing":"Defense"}</div>
-                {roster.filter(p=>p.position===pos).map(p=>(
+            {/* Forward Lines */}
+            {[1,2,3,4].map(lineNum=>{
+              const lw=roster.find(p=>p.position==="LW"&&p.line===lineNum);
+              const c=roster.find(p=>p.position==="C"&&p.line===lineNum);
+              const rw=roster.find(p=>p.position==="RW"&&p.line===lineNum);
+              if(!lw&&!c&&!rw) return null;
+              return (
+                <div key={lineNum} style={s.card}>
+                  <div style={s.sec}>Line {lineNum}</div>
+                  {[lw,c,rw].map((p,i)=>p?(
+                    <div key={p.id} style={{display:"flex",alignItems:"center",gap:8,marginBottom:6,padding:"6px 10px",background:"#0d1117",borderRadius:6}}>
+                      <span style={s.badge(p.position)}>{p.position}</span>
+                      <span style={{fontSize:11,color:"#556",width:28}}>#{p.number}</span>
+                      <span style={{flex:1,fontSize:13,fontWeight:700}}>{p.name}</span>
+                      <button style={{fontSize:11,background:"#1e2a3a",border:"1px solid #2a3a4a",borderRadius:4,color:"#e8eaf0",padding:"3px 8px",cursor:"pointer"}} onClick={()=>{
+                        const n=prompt("Name:",p.name);if(!n)return;
+                        const num=parseInt(prompt("Number:",p.number))||p.number;
+                        const pos2=prompt("Position (LW/C/RW):",p.position)?.toUpperCase();
+                        const ln=parseInt(prompt("Line (1-4):",p.line))||p.line;
+                        if(!["LW","C","RW"].includes(pos2))return alert("Invalid");
+                        setRoster(r=>r.map(x=>x.id===p.id?{...x,name:n,number:num,position:pos2,line:ln}:x));
+                      }}>✏️</button>
+                      <button style={{fontSize:11,background:"#3a1a1a",border:"1px solid #5a2a2a",borderRadius:4,color:"#ff6666",padding:"3px 8px",cursor:"pointer"}} onClick={()=>{if(confirm(`Remove ${p.name}?`))setRoster(r=>r.filter(x=>x.id!==p.id));}}>✕</button>
+                    </div>
+                  ):<div key={i} style={{padding:"4px 10px",marginBottom:4,fontSize:11,color:"#445"}}>Empty slot</div>)}
+                </div>
+              );
+            })}
+
+            {/* D Pairs */}
+            {[1,2,3].map(pairNum=>{
+              const pair=roster.filter(p=>p.position==="D"&&p.line===pairNum);
+              if(pair.length===0) return null;
+              return (
+                <div key={pairNum} style={s.card}>
+                  <div style={s.sec}>D Pair {pairNum}</div>
+                  {pair.map(p=>(
+                    <div key={p.id} style={{display:"flex",alignItems:"center",gap:8,marginBottom:6,padding:"6px 10px",background:"#0d1117",borderRadius:6}}>
+                      <span style={s.badge(p.position)}>{p.position}</span>
+                      <span style={{fontSize:11,color:"#556",width:28}}>#{p.number}</span>
+                      <span style={{flex:1,fontSize:13,fontWeight:700}}>{p.name}</span>
+                      <button style={{fontSize:11,background:"#1e2a3a",border:"1px solid #2a3a4a",borderRadius:4,color:"#e8eaf0",padding:"3px 8px",cursor:"pointer"}} onClick={()=>{
+                        const n=prompt("Name:",p.name);if(!n)return;
+                        const num=parseInt(prompt("Number:",p.number))||p.number;
+                        const ln=parseInt(prompt("Pair (1-3, 99=extra):",p.line))||p.line;
+                        setRoster(r=>r.map(x=>x.id===p.id?{...x,name:n,number:num,line:ln}:x));
+                      }}>✏️</button>
+                      <button style={{fontSize:11,background:"#3a1a1a",border:"1px solid #5a2a2a",borderRadius:4,color:"#ff6666",padding:"3px 8px",cursor:"pointer"}} onClick={()=>{if(confirm(`Remove ${p.name}?`))setRoster(r=>r.filter(x=>x.id!==p.id));}}>✕</button>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+
+            {/* Extras */}
+            {roster.filter(p=>p.line===99||!p.line).length>0&&(
+              <div style={s.card}>
+                <div style={s.sec}>Extras / Scratches</div>
+                {roster.filter(p=>p.line===99||!p.line).map(p=>(
                   <div key={p.id} style={{display:"flex",alignItems:"center",gap:8,marginBottom:6,padding:"6px 10px",background:"#0d1117",borderRadius:6}}>
                     <span style={s.badge(p.position)}>{p.position}</span>
                     <span style={{fontSize:11,color:"#556",width:28}}>#{p.number}</span>
@@ -937,15 +983,26 @@ function App() {
                       const n=prompt("Name:",p.name);if(!n)return;
                       const num=parseInt(prompt("Number:",p.number))||p.number;
                       const pos2=prompt("Position (LW/C/RW/D):",p.position)?.toUpperCase();
+                      const ln=parseInt(prompt("Line/Pair (1-4 F, 1-3 D, 99=extra):",p.line||99))||99;
                       if(!["LW","C","RW","D"].includes(pos2))return alert("Invalid");
-                      setRoster(r=>r.map(x=>x.id===p.id?{...x,name:n,number:num,position:pos2}:x));
+                      setRoster(r=>r.map(x=>x.id===p.id?{...x,name:n,number:num,position:pos2,line:ln}:x));
                     }}>✏️</button>
                     <button style={{fontSize:11,background:"#3a1a1a",border:"1px solid #5a2a2a",borderRadius:4,color:"#ff6666",padding:"3px 8px",cursor:"pointer"}} onClick={()=>{if(confirm(`Remove ${p.name}?`))setRoster(r=>r.filter(x=>x.id!==p.id));}}>✕</button>
                   </div>
                 ))}
-                {roster.filter(p=>p.position===pos).length===0&&<div style={{fontSize:11,color:"#445"}}>No players.</div>}
               </div>
-            ))}
+            )}
+            <div style={{display:"flex",gap:8,marginTop:8,flexWrap:"wrap"}}>
+              <button style={{...s.btn,fontSize:11,padding:"6px 14px",background:"#1e2a3a"}} onClick={()=>{
+                const name=prompt("Player full name:");if(!name)return;
+                const pos=prompt("Position (LW/C/RW/D):")?.toUpperCase();if(!["LW","C","RW","D"].includes(pos))return alert("Invalid");
+                const num=parseInt(prompt("Jersey number:"))||0;
+                const ln=parseInt(prompt("Line (1-4 for F, 1-3 for D, 99=extra):"))||99;
+                const newId=Math.max(...roster.map(r=>r.id),0)+1;
+                setRoster(r=>[...r,{id:newId,name,number:num,position:pos,line:ln}]);
+              }}>+ Add Player</button>
+              <button style={{...s.btn,fontSize:11,padding:"6px 14px",background:"#6C757D"}} onClick={()=>{if(confirm("Reset to default 2026-27 roster?"))setRoster(DEFAULT_ROSTER);}}>↺ Reset</button>
+            </div>
           </div>
         )}
 
