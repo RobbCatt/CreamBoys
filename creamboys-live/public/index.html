@@ -798,6 +798,73 @@ function App() {
         {/* ── LINEUP ── */}
         {screen==="setup"&&(
           <div>
+
+            {/* Start Game Button */}
+            <button style={{...s.btn,width:"100%",fontSize:15,padding:"14px",marginBottom:8,boxShadow:"0 4px 16px #F47D2066"}} onClick={startNewGame}>
+              {isFirstGame?"🏒 Start Season (Game 1)":`🏒 Start Game ${games.length+1}`}
+            </button>
+
+            {/* Draft Order - compact 2-col */}
+            <div style={s.card}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:7}}>
+                <div style={s.sec}>Draft Order</div>
+                <button style={{fontSize:10,padding:"3px 10px",borderRadius:4,border:"1px solid #2a3a4a",background:editingDraftOrder?"#F47D20":"#1e2a3a",color:"#fff",cursor:"pointer",fontFamily:"Georgia,serif"}}
+                  onClick={()=>{
+                    if(!editingDraftOrder){
+                      const base=isFirstGame?[0,1,2,3,4,5]:buildDraftOrder(games[games.length-1].scores,games[games.length-1].firstGoalManagerIdx);
+                      setCustomDraftOrder(customDraftOrder||base);
+                    }
+                    setEditingDraftOrder(e=>!e);
+                  }}>{editingDraftOrder?"✅ Done":"✏️ Edit"}</button>
+              </div>
+              {editingDraftOrder&&customDraftOrder?(
+                <div>
+                  <div style={{fontSize:10,color:"#8899aa",marginBottom:8}}>Use arrows to set draft order. Position 6 picks last.</div>
+                  {customDraftOrder.map((mId,pos)=>(
+                    <div key={pos} style={{display:"flex",alignItems:"center",gap:8,marginBottom:5,padding:"4px 8px",background:"#0d1117",borderRadius:6}}>
+                      <div style={{width:22,height:22,borderRadius:"50%",background:pos===5?"#023B96":"#F47D20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:"#fff",flexShrink:0}}>{pos+1}</div>
+                      <span style={{fontSize:14,flex:1,fontWeight:700}}>{MANAGERS[mId]}</span>
+                      {pos===5&&<span style={{fontSize:10,color:"#8899aa"}}>PICKS LAST</span>}
+                      <div style={{display:"flex",flexDirection:"column",gap:2}}>
+                        <button disabled={pos===0} onClick={()=>{const o=[...customDraftOrder];[o[pos-1],o[pos]]=[o[pos],o[pos-1]];setCustomDraftOrder(o);}} style={{fontSize:10,lineHeight:1,padding:"2px 6px",background:"#1e2a3a",border:"1px solid #2a3a4a",borderRadius:3,color:pos===0?"#334":"#fff",cursor:pos===0?"default":"pointer"}}>▲</button>
+                        <button disabled={pos===5} onClick={()=>{const o=[...customDraftOrder];[o[pos],o[pos+1]]=[o[pos+1],o[pos]];setCustomDraftOrder(o);}} style={{fontSize:10,lineHeight:1,padding:"2px 6px",background:"#1e2a3a",border:"1px solid #2a3a4a",borderRadius:3,color:pos===5?"#334":"#fff",cursor:pos===5?"default":"pointer"}}>▼</button>
+                      </div>
+                    </div>
+                  ))}
+                  <button style={{fontSize:10,color:"#ff6666",background:"none",border:"none",cursor:"pointer",marginTop:4}} onClick={()=>{setCustomDraftOrder(null);setEditingDraftOrder(false);}}>↺ Reset to auto</button>
+                </div>
+              ):(
+                <div>
+                  {(()=>{
+                    const order = customDraftOrder||(isFirstGame?[0,1,2,3,4,5]:buildDraftOrder(games[games.length-1].scores,games[games.length-1].firstGoalManagerIdx));
+                    const col1=order.slice(0,3);
+                    const col2=order.slice(3,6);
+                    return(
+                      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}>
+                        {[0,1,2].map(i=>(
+                          <React.Fragment key={i}>
+                            <div style={{display:"flex",alignItems:"center",gap:6,padding:"3px 0"}}>
+                              <div style={{width:22,height:22,borderRadius:"50%",background:"#F47D20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:"#fff",flexShrink:0}}>{i+1}</div>
+                              <span style={{fontSize:13,fontWeight:700}}>{MANAGERS[col1[i]]}</span>
+                            </div>
+                            <div style={{display:"flex",alignItems:"center",gap:6,padding:"3px 0"}}>
+                              <div style={{width:22,height:22,borderRadius:"50%",background:i===2?"#023B96":"#F47D20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:"#fff",flexShrink:0}}>{i+4}</div>
+                              <span style={{fontSize:13,fontWeight:700}}>{MANAGERS[col2[i]]}</span>
+                              {i===2&&<span style={{fontSize:9,color:"#8899aa"}}>LAST</span>}
+                            </div>
+                          </React.Fragment>
+                        ))}
+                      </div>
+                    );
+                  })()}
+                  {isFirstGame&&!customDraftOrder&&<div style={{fontSize:10,color:"#556",marginTop:6}}>Draft order will be randomized when game starts</div>}
+                  {customDraftOrder&&<div style={{fontSize:10,color:"#F47D20",marginTop:6}}>⚠️ Custom order set</div>}
+                </div>
+              )}
+            </div>
+
+
+            {/* Line Up */}
             <div style={s.card}>
               <div style={s.sec}>Line Up</div>
               <div style={{fontSize:11,color:"#8899aa",marginBottom:10}}>Add, edit or remove players manually.</div>
@@ -837,81 +904,7 @@ function App() {
                 {roster.filter(p=>p.position===pos).length===0&&<div style={{fontSize:11,color:"#445"}}>No players.</div>}
               </div>
             ))}
-
-
-            {/* Draft Order & Start Game */}
-            <div style={{...s.card,marginTop:8,borderTop:"2px solid #F47D20"}}>
-              <div style={s.sec}>Draft Order & Game</div>
-            </div>
-            <div style={s.card}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:7}}>
-                <div style={s.sec}>Draft Order</div>
-                <button style={{fontSize:10,padding:"3px 10px",borderRadius:4,border:"1px solid #2a3a4a",background:editingDraftOrder?"#F47D20":"#1e2a3a",color:"#fff",cursor:"pointer",fontFamily:"Georgia,serif"}}
-                  onClick={()=>{
-                    if(!editingDraftOrder){
-                      const base=isFirstGame?[0,1,2,3,4,5]:buildDraftOrder(games[games.length-1].scores,games[games.length-1].firstGoalManagerIdx);
-                      setCustomDraftOrder(customDraftOrder||base);
-                    }
-                    setEditingDraftOrder(e=>!e);
-                  }}>{editingDraftOrder?"✅ Done":"✏️ Edit"}</button>
-              </div>
-              {editingDraftOrder&&customDraftOrder?(
-                <div>
-                  <div style={{fontSize:10,color:"#8899aa",marginBottom:8}}>Use arrows to set draft order. Position 6 picks last.</div>
-                  {customDraftOrder.map((mId,pos)=>(
-                    <div key={pos} style={{display:"flex",alignItems:"center",gap:8,marginBottom:5,padding:"4px 8px",background:"#0d1117",borderRadius:6}}>
-                      <div style={{width:26,height:26,borderRadius:"50%",background:pos===5?"#023B96":"#F47D20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:"#fff",flexShrink:0}}>{pos+1}</div>
-                      <span style={{fontSize:14,flex:1,fontWeight:700}}>{MANAGERS[mId]}</span>
-                      {pos===5&&<span style={{fontSize:10,color:"#8899aa"}}>PICKS LAST</span>}
-                      <div style={{display:"flex",flexDirection:"column",gap:2}}>
-                        <button disabled={pos===0} onClick={()=>{const o=[...customDraftOrder];[o[pos-1],o[pos]]=[o[pos],o[pos-1]];setCustomDraftOrder(o);}} style={{fontSize:10,lineHeight:1,padding:"2px 6px",background:"#1e2a3a",border:"1px solid #2a3a4a",borderRadius:3,color:pos===0?"#334":"#fff",cursor:pos===0?"default":"pointer"}}>▲</button>
-                        <button disabled={pos===5} onClick={()=>{const o=[...customDraftOrder];[o[pos],o[pos+1]]=[o[pos+1],o[pos]];setCustomDraftOrder(o);}} style={{fontSize:10,lineHeight:1,padding:"2px 6px",background:"#1e2a3a",border:"1px solid #2a3a4a",borderRadius:3,color:pos===5?"#334":"#fff",cursor:pos===5?"default":"pointer"}}>▼</button>
-                      </div>
-                    </div>
-                  ))}
-                  <button style={{fontSize:10,color:"#ff6666",background:"none",border:"none",cursor:"pointer",marginTop:4}} onClick={()=>{setCustomDraftOrder(null);setEditingDraftOrder(false);}}>↺ Reset to auto</button>
-                </div>
-              ):(
-                <div>
-                  {(customDraftOrder||(isFirstGame?null:buildDraftOrder(games[games.length-1].scores,games[games.length-1].firstGoalManagerIdx)))?
-                    (customDraftOrder||buildDraftOrder(games[games.length-1].scores,games[games.length-1].firstGoalManagerIdx)).map((mId,pos)=>(
-                      <div key={pos} style={{display:"flex",alignItems:"center",gap:8,marginBottom:5}}>
-                        <div style={{width:26,height:26,borderRadius:"50%",background:pos===5?"#023B96":"#F47D20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:"#fff",flexShrink:0}}>{pos+1}</div>
-                        <span style={{fontSize:14,flex:1}}>{MANAGERS[mId]}</span>
-                        {pos===5&&<span style={{fontSize:10,color:"#8899aa",letterSpacing:1}}>PICKS LAST</span>}
-                      </div>
-                    ))
-                  :MANAGERS.map((name,i)=>(
-                    <div key={i} style={{display:"flex",alignItems:"center",gap:8,marginBottom:5}}>
-                      <div style={{width:26,height:26,borderRadius:"50%",background:"#334",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:"#aaa",flexShrink:0}}>?</div>
-                      <span style={{fontSize:14,flex:1,color:"#8899aa"}}>{name}</span>
-                    </div>
-                  ))}
-                  {isFirstGame&&!customDraftOrder&&<div style={{fontSize:10,color:"#556",marginTop:6}}>Draft order will be randomized when game starts</div>}
-                  {customDraftOrder&&<div style={{fontSize:10,color:"#F47D20",marginTop:6}}>⚠️ Custom order set</div>}
-                </div>
-              )}
-            </div>
-            <div style={s.card}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer"}} onClick={()=>setRulesOpen(r=>!r)}>
-                <div style={s.sec}>Draft Rules</div>
-                <span style={{color:"#F47D20",fontSize:14}}>{rulesOpen?"▲":"▼"}</span>
-              </div>
-              {rulesOpen&&<div style={{fontSize:11,color:"#8899aa",lineHeight:1.6,marginTop:7}}>
-                <div>📋 <b style={{color:"#e8eaf0"}}>Round 1 & 2:</b> Positions 1→6</div>
-                <div>📋 <b style={{color:"#e8eaf0"}}>Round 3:</b> Positions 5→4→3→2→1→6</div>
-                <div>🏅 <b style={{color:"#e8eaf0"}}>Seeding (picks 1-5):</b> Most points in previous game</div>
-                <div>🍦 <b style={{color:"#e8eaf0"}}>Pick 6:</b> Drafted first goal scorer last game</div>
-                <div>⭐ <b style={{color:"#e8eaf0"}}>Scoring:</b> 1pt per goal + 1pt per assist</div>
-                <div>🔀 <b style={{color:"#e8eaf0"}}>Game 1:</b> Random seeding</div>
-              </div>}
-            </div>
-            {dbStatus&&<div style={{fontSize:10,color:"#8899aa",marginBottom:6}}>{dbStatus}</div>}
-            <button style={{...s.btn,fontSize:12,padding:"8px 22px"}} onClick={startNewGame}>
-              {isFirstGame?"Start Season (Game 1)":`Start Game ${games.length+1}`}
-            </button>
           </div>
-        
         )}
 
         {(screen==="draft"||screen==="scoring")&&!currentGame&&(
