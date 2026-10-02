@@ -295,25 +295,33 @@ function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
-          max_tokens: 1000,
-          messages: [{ role: "user", content: "Search for the current NY Islanders 2026-27 roster and return ONLY a JSON array of forwards and defense (no goalies, no injured reserve). Each object: {id, name, number, position}. Position values: LW, C, RW, D. No explanation, no markdown, just the raw JSON array." }],
+          max_tokens: 2000,
+          messages: [{ role: "user", content: "Search for NY Islanders current active roster 2026-27. Return ONLY a valid JSON array, no other text. Format: [{id:1,name:\"First Last\",number:10,position:\"LW\"}]. Positions: LW C RW D only. No goalies. No injured reserve. Start your response with [ and end with ]." }],
           tools: [{ type: "web_search_20250305", name: "web_search" }]
         })
       });
       const data = await res.json();
-      const text = data.content.filter(b => b.type === "text").map(b => b.text).join("");
-      const clean = text.replace(/```json|```/g, "").trim();
-      const parsed = JSON.parse(clean);
+      // Try to extract JSON array from response
+      const allText = data.content.filter(b => b.type === "text").map(b => b.text).join("");
+      // Find the JSON array - look for [ ... ]
+      const match = allText.match(/\[\s*\{[\s\S]*\}\s*\]/);
+      if (!match) {
+        alert("❌ Could not find roster data in response. Raw: " + allText.substring(0,200));
+        setRosterLoading(false);
+        return;
+      }
+      const parsed = JSON.parse(match[0]);
       if (Array.isArray(parsed) && parsed.length > 0) {
         const newRoster = parsed.filter(p => p.position !== "G").map((p,i) => ({...p, id: i+1}));
         setRoster(newRoster);
         const today = new Date().toLocaleDateString();
         setRosterDate(today);
-        alert("✅ Roster updated! " + newRoster.length + " players loaded as of " + today);
+        alert("✅ Roster updated! " + newRoster.length + " players loaded.");
+      } else {
+        alert("❌ Parsed array was empty.");
       }
     } catch(e) { 
-      console.error("Roster refresh failed:", e);
-      alert("Roster refresh failed: " + e.message);
+      alert("❌ Error: " + e.message);
     }
     setRosterLoading(false);
   }
