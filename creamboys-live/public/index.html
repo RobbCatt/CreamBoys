@@ -213,6 +213,8 @@ function App() {
   const [customDraftOrder, setCustomDraftOrder] = useState(null);
   const [editingGameId, setEditingGameId] = useState(null);
   const [rulesOpen, setRulesOpen] = useState(false);
+  const [setupPw, setSetupPw] = useState('');
+  const [setupPwErr, setSetupPwErr] = useState(false);
   const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('cb_auth') === 'true');
   const [pwInput, setPwInput] = useState('');
   const [pwError, setPwError] = useState(false);
@@ -509,14 +511,7 @@ function App() {
 
       <div style={{...s.nav,overflowX:"auto",flexWrap:"nowrap",WebkitOverflowScrolling:"touch"}}>
         {["home","draft","scoring","standings","setup"].map(t=>(
-          <button key={t} style={s.navBtn(screen===t)} onClick={()=>{
-              if(t==="setup"){
-                const pw=prompt("Enter Setup password:");
-                if(pw==="CreamMe") setScreen("setup");
-              } else {
-                setScreen(t);
-              }
-            }}>{t}</button>
+          <button key={t} style={s.navBtn(screen===t)} onClick={()=>setScreen(t==="setup"?"setup-lock":t)}>{t}</button>
         ))}
       </div>
 
@@ -816,7 +811,34 @@ function App() {
         )}
 
         {/* ── LINEUP ── */}
-        {screen==="setup"&&(
+        {screen==="setup-lock"&&(
+          <div style={{...s.card,textAlign:"center",padding:"50px 20px",marginTop:20}}>
+            <div style={{fontSize:48,marginBottom:16}}>🔒</div>
+            <div style={{fontSize:16,fontWeight:700,color:"#e8eaf0",marginBottom:8}}>Setup Access</div>
+            <div style={{fontSize:12,color:"#8899aa",marginBottom:24}}>Enter password to continue</div>
+            <input
+              type="password"
+              placeholder="Password"
+              value={setupPw}
+              autoFocus
+              onChange={e=>{setSetupPw(e.target.value);setSetupPwErr(false);}}
+              onKeyDown={e=>{
+                if(e.key==="Enter"){
+                  if(setupPw==="CreamMe"){setScreen("setup");setSetupPw("");setSetupPwErr(false);}
+                  else{setSetupPwErr(true);setSetupPw("");}
+                }
+              }}
+              style={{...s.inp,textAlign:"center",letterSpacing:4,fontSize:18,marginBottom:12,maxWidth:220,display:"block",margin:"0 auto 12px"}}
+            />
+            {setupPwErr&&<div style={{fontSize:12,color:"#ff6666",marginBottom:12}}>Incorrect password</div>}
+            <button style={{...s.btn,fontSize:14,marginTop:8}} onClick={()=>{
+              if(setupPw==="CreamMe"){setScreen("setup");setSetupPw("");setSetupPwErr(false);}
+              else{setSetupPwErr(true);setSetupPw("");}
+            }}>Unlock 🔓</button>
+          </div>
+        )}
+
+                {screen==="setup"&&(
           <div>
 
             {/* Start Game Button */}
