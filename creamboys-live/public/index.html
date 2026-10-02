@@ -307,9 +307,14 @@ function App() {
       if (Array.isArray(parsed) && parsed.length > 0) {
         const newRoster = parsed.filter(p => p.position !== "G").map((p,i) => ({...p, id: i+1}));
         setRoster(newRoster);
-        setRosterDate(new Date().toLocaleDateString());
+        const today = new Date().toLocaleDateString();
+        setRosterDate(today);
+        alert("✅ Roster updated! " + newRoster.length + " players loaded as of " + today);
       }
-    } catch(e) { console.error("Roster refresh failed:", e); }
+    } catch(e) { 
+      console.error("Roster refresh failed:", e);
+      alert("Roster refresh failed: " + e.message);
+    }
     setRosterLoading(false);
   }
 
