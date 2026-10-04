@@ -530,15 +530,16 @@ function App() {
             <div>
               <div style={s.card}>
                 <div style={s.sec}>Draft Board</div>
-                {MANAGERS.map((name,i)=>{
-                  const myPicks=currentGame.picks.filter(p=>p&&p.managerId===i).map(p=>roster.find(r=>r.id===p.playerId));
-                  const isActive=curMgrId===i&&draftPick<18;
+                {currentGame.draftOrder.map((managerId,draftPos)=>{
+                  const myPicks=currentGame.picks.filter(p=>p&&p.managerId===managerId).map(p=>roster.find(r=>r.id===p.playerId));
+                  const isActive=curMgrId===managerId&&draftPick<18;
                   return(
-                    <div key={i} style={s.mCard(isActive)}>
+                    <div key={managerId} style={s.mCard(isActive)}>
                       <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:5}}>
-                        <div style={{width:20,height:20,borderRadius:"50%",background:isActive?"#F47D20":"#1e2a3a",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,color:"#fff",flexShrink:0}}>{i+1}</div>
-                        <span style={{fontSize:13,fontWeight:700,color:isActive?"#F47D20":"#e8eaf0"}}>{name}</span>
+                        <div style={{width:20,height:20,borderRadius:"50%",background:isActive?"#F47D20":draftPos===5?"#023B96":"#1e2a3a",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,color:"#fff",flexShrink:0}}>{draftPos+1}</div>
+                        <span style={{fontSize:13,fontWeight:700,color:isActive?"#F47D20":"#e8eaf0"}}>{MANAGERS[managerId]}</span>
                         {isActive&&<span style={{fontSize:9,color:"#F47D20",letterSpacing:1,marginLeft:"auto"}}>PICKING</span>}
+                        {draftPos===5&&!isActive&&<span style={{fontSize:9,color:"#8899aa",letterSpacing:1,marginLeft:"auto"}}>PICKS LAST</span>}
                       </div>
                       <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
                         {myPicks.map(p=>p&&<div key={p.id} style={{fontSize:11,background:"#1e2a3a",borderRadius:4,padding:"2px 7px",color:"#ccd"}}>{p.name} <span style={s.badge(p.position)}>{p.position}</span></div>)}
